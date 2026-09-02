@@ -143,12 +143,13 @@ a{ color:inherit; }
 .topbar-left{ display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; }
 .brand{ display:flex; align-items:center; gap:0.65rem; }
 .brand .mark{
-  width:38px; height:38px; border-radius:14px; background:var(--accent-coral);
+  width:42px; height:42px; border-radius:14px;
   display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-display); font-weight:700; font-size:1rem;
-  color:var(--text-on-accent); transform:rotate(-8deg); flex-shrink:0;
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--accent-coral) 60%, black);
+  overflow:hidden; flex-shrink:0;
+  background:var(--surface-card);
+  box-shadow: 3px 3px 0 var(--surface-border);
 }
+.brand .mark img{ width:100%; height:100%; object-fit:contain; display:block; }
 .brand .name{ font-size:1.08em; font-weight:700; font-family:var(--font-display); }
 .brand .sub{ font-size:0.7em; color:var(--accent-teal-strong); font-weight:800; letter-spacing:0.06em; }
 
@@ -475,6 +476,9 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 }
 
 footer{ text-align:center; padding:1.3rem; font-size:0.78em; color:var(--text-secondary); font-weight:700; }
+footer .footer-tagline{ margin-bottom:0.6rem; }
+footer .footer-legal{ display:flex; flex-direction:column; gap:0.15rem; padding-top:0.8rem; border-top:1.5px dashed var(--surface-border); font-size:0.95em; }
+footer .footer-legal .fl-brand{ color:var(--accent-teal-strong); font-family:var(--font-display); letter-spacing:0.02em; }
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:600px){
@@ -507,7 +511,7 @@ footer{ text-align:center; padding:1.3rem; font-size:0.78em; color:var(--text-se
     <div class="topbar-left">
       <button class="back-btn" id="back-btn" onclick="goBack()" aria-label="Revenir à l'écran précédent">← Retour</button>
       <div class="brand">
-        <div class="mark" aria-hidden="true">RQ</div>
+        <div class="mark" aria-hidden="true"><img src="mascotte.png" alt=""></div>
         <div>
           <div class="name">Le Parcours RQTH</div>
           <div class="sub">JEU DE PISTE · DROITS DES JEUNES</div>
@@ -560,7 +564,14 @@ footer{ text-align:center; padding:1.3rem; font-size:0.78em; color:var(--text-se
 
   <main id="main"></main>
 
-  <footer>Parcours conçu pour un atelier de sensibilisation d'1h · 12 stations · à imprimer, scanner, transmettre</footer>
+  <footer>
+    <div class="footer-tagline">Parcours conçu pour un atelier de sensibilisation d'1h · 12 stations · à imprimer, scanner, transmettre</div>
+    <div class="footer-legal">
+      <span>Copyright © 2026. Tous droits réservés.</span>
+      <span class="fl-brand">Handi'games</span>
+      <span>UGECAM — Centre La Mollière</span>
+    </div>
+  </footer>
 </div>
 
 <script>
