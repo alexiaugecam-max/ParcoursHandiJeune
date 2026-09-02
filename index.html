@@ -271,6 +271,15 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .station-num{ font-family:var(--font-display); color:var(--accent-coral); font-weight:700; font-size:0.95em; }
 .station-title{ font-size:1.55em; line-height:1.2; margin-bottom:0.35rem; }
 
+.station-head-row{ display:flex; align-items:center; gap:0.9rem; margin-bottom:0.2rem; }
+.station-head-row .station-title{ margin-bottom:0; flex:1; }
+.station-illustration{
+  width:64px; height:64px; border-radius:18px; flex-shrink:0; color:#fff;
+  display:flex; align-items:center; justify-content:center; transform:rotate(-4deg);
+  box-shadow:3px 3px 0 rgba(0,0,0,0.18);
+}
+.station-illustration .ico-svg{ width:32px; height:32px; }
+
 .format-tag{
   font-weight:800; font-size:0.7em; letter-spacing:0.03em;
   padding:0.25rem 0.65rem; border-radius:12px; text-transform:uppercase;
@@ -370,6 +379,22 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .entry-wrap h1{ font-size:2em; line-height:1.18; margin-bottom:0.8rem; }
 .entry-wrap h1 .accent{ color:var(--accent-coral); }
 .entry-wrap p.lede{ color:var(--text-secondary); max-width:480px; margin:0 auto 1.5rem; font-size:1.02em; font-weight:600; }
+
+.entry-cartouche{
+  background:var(--surface-card); border:3px solid var(--surface-border); border-radius:var(--radius-lg);
+  padding:1.8rem 1.6rem; margin:0 auto 1.6rem; max-width:560px;
+  box-shadow:5px 6px 0 var(--surface-border);
+  position:relative; overflow:hidden;
+}
+.entry-cartouche::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent-sun-pop) 22%, transparent), transparent 45%),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent-coral) 14%, transparent), transparent 50%);
+  pointer-events:none;
+}
+.entry-cartouche > *{ position:relative; }
+.entry-cartouche p.lede{ margin-bottom:0; }
 
 .chapter-grid{ display:flex; flex-direction:column; gap:0.9rem; margin-top:1rem; text-align:left; }
 
@@ -514,6 +539,8 @@ footer .footer-legal .fl-brand{ color:var(--accent-teal-strong); font-family:var
   .brand .sub{ display:none; }
   .entry-wrap h1{ font-size:1.6em; }
   .station-title{ font-size:1.3em; }
+  .station-illustration{ width:50px; height:50px; border-radius:14px; }
+  .station-illustration .ico-svg{ width:26px; height:26px; }
   .vf-row{ grid-template-columns:1fr; }
   .fac-header{ flex-direction:column; }
   .timer-box{ width:100%; }
@@ -631,9 +658,29 @@ const ICONS = {
   chat: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 9 9 0 01-3.6-.7L3 20l1.4-4A8.4 8.4 0 1121 11.5z"/></svg>',
   trophy: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v4a4 4 0 01-8 0V4z"/><path d="M8 5H5a3 3 0 003 3"/><path d="M16 5h3a3 3 0 01-3 3"/><path d="M9 16h6M12 12v4"/><path d="M8 20h8"/></svg>',
   download: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>',
-  medal: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 22l5-3 5 3-2-7.5"/></svg>'
+  medal: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 22l5-3 5 3-2-7.5"/></svg>',
+  scale: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M4 21h16"/><path d="M12 6L4 9"/><path d="M12 6l8 3"/><path d="M4 9l-2 5a3 3 0 006 0z"/><path d="M20 9l-2 5a3 3 0 006 0z"/><path d="M9 21h6"/><path d="M12 6v12"/></svg>',
+  calendar: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>',
+  doorOpen: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 012-2h6v18"/><path d="M12 3l7 2v16l-7-2"/><path d="M9 12h.01"/></svg>',
+  piggyBank: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a5 5 0 015-5h5a5 5 0 015 5v1a2 2 0 01-2 2h-1v2h-2v-2H9v2H7v-2H6a2 2 0 01-2-2v-1z"/><circle cx="16" cy="10" r="0.6" fill="currentColor" stroke="none"/><path d="M9 7V5a2 2 0 012-2h2"/></svg>',
+  briefcase: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 12h18"/></svg>',
+  handshake: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11l4-3 3 2M22 11l-4-3-3 2"/><path d="M9 10l3 2 3-2"/><path d="M8 12l3 3 2-2 4 4"/></svg>',
+  clipboardCheck: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/><path d="M9 12l2 2 4-4"/></svg>'
 };
 function icon(name){ return ICONS[name] || ''; }
+
+const stationIllustrations = {
+  1:'bulb', 2:'scale', 3:'calendar', 4:'brain', 5:'lock', 6:'cap',
+  7:'doorOpen', 8:'euro', 9:'piggyBank', 10:'briefcase', 11:'handshake', 12:'clipboardCheck'
+};
+const chapterColors = [
+  'var(--accent-coral)', 'var(--accent-violet)', 'var(--accent-teal)',
+  'var(--accent-sun)', 'var(--accent-coral-strong)', 'var(--accent-violet-strong)'
+];
+function stationColor(s){
+  const idx = chapters.findIndex(c => c.id === s.chapter);
+  return chapterColors[idx] || 'var(--accent-coral)';
+}
 
 /* ===================== LIENS & QR CODES ===================== */
 function appBaseUrl(){
@@ -996,9 +1043,11 @@ function renderEntry(){
 
   return `
     <div class="entry-wrap">
-      <div class="kicker">${icon('sparkles')} Bienvenue sur le parcours</div>
-      <h1>12 stations.<br><span class="accent">${totalQuestions()} questions</span> à découvrir.</h1>
-      <p class="lede">Le parcours est organisé en 6 chapitres et 12 stations. Choisis un chapitre ci-dessous pour commencer, réponds aux questions dans l'ordre, et utilise les boutons « Question suivante » et « Question précédente » pour naviguer. Ta progression est enregistrée automatiquement.</p>
+      <div class="entry-cartouche">
+        <div class="kicker">${icon('sparkles')} C'est parti pour l'aventure</div>
+        <h1>12 stations à explorer.<br><span class="accent">${totalQuestions()} questions</span> qui vont te surprendre.</h1>
+        <p class="lede">Le parcours se joue en 6 chapitres et 12 stations, un peu comme un jeu de piste. Choisis un chapitre pour te lancer, avance question après question grâce aux boutons « Suivant » et « Précédent », et amuse-toi : chaque bonne réponse t'en apprend un peu plus sur tes droits. Pas de stress, ta progression est enregistrée automatiquement, tu peux reprendre où tu t'es arrêté·e.</p>
+      </div>
       <div class="chapter-grid">${cards}</div>
       <p class="entry-hint">${icon('bulb')} Astuce animateur : chaque équipe peut démarrer où elle veut, l'appli garde la trace de ce qui est validé.</p>
     </div>
@@ -1090,7 +1139,10 @@ function renderStation(i, qIdx){
         <span class="station-num">STATION ${s.num} / ${stations.length}</span>
         <span class="label">${s.categorie}</span>
       </div>
-      <h2 class="station-title">${s.title}</h2>
+      <div class="station-head-row">
+        <div class="station-illustration" style="background:${stationColor(s)};" aria-hidden="true">${icon(stationIllustrations[s.num])}</div>
+        <h2 class="station-title">${s.title}</h2>
+      </div>
       <div class="station-eyebrow">
         <span class="q-progress">Question ${qIdx+1} / ${s.questions.length}</span>
         <span class="format-tag ${q.format}">${formatLabel[q.format]}</span>
