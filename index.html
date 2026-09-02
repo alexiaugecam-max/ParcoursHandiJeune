@@ -427,12 +427,8 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .resource-box p{ font-size:0.9em; opacity:0.92; margin-bottom:1rem; font-weight:600; }
 .qr-block{
   width:132px; height:132px; margin:0 auto 0.8rem;
-  background: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%) 50% / 16px 16px, #fff;
-  border-radius:14px; position:relative; overflow:hidden;
-}
-.qr-block::after{
-  content:""; position:absolute; inset:13px; background:var(--accent-teal);
-  mask-image: radial-gradient(circle, transparent 30%, black 31%); opacity:0.18;
+  background:#fff; border-radius:14px; padding:8px; box-sizing:border-box;
+  display:block; object-fit:contain;
 }
 .qr-note{ font-size:0.72em; letter-spacing:0.04em; opacity:0.85; font-weight:700; }
 
@@ -500,7 +496,7 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .qr-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:0.9rem; margin-top:1rem; }
 @media(max-width:560px){ .qr-grid{ grid-template-columns:repeat(2,1fr); } }
 .qr-card-mini{ background:var(--surface-card); border:2.5px solid var(--surface-border); border-radius:var(--radius-md); padding:0.9rem; text-align:center; }
-.qr-card-mini .qr-block{ width:68px; height:68px; margin-bottom:0.5rem; border-radius:10px; }
+.qr-card-mini .qr-block{ width:68px; height:68px; margin-bottom:0.5rem; border-radius:10px; padding:4px; }
 .qr-card-mini strong{ font-size:0.78em; display:block; margin-bottom:0.15rem; }
 .qr-card-mini span{ font-size:0.68em; color:var(--accent-teal-strong); font-weight:700; }
 
@@ -638,6 +634,30 @@ const ICONS = {
   medal: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 22l5-3 5 3-2-7.5"/></svg>'
 };
 function icon(name){ return ICONS[name] || ''; }
+
+/* ===================== LIENS & QR CODES ===================== */
+function appBaseUrl(){
+  return window.location.origin + window.location.pathname;
+}
+function stationUrl(num){
+  return appBaseUrl() + '?station=' + num;
+}
+function qrImageUrl(data, size){
+  return 'https://api.qrserver.com/v1/create-qr-code/?size=' + size + 'x' + size + '&data=' + encodeURIComponent(data);
+}
+function initFromQuery(){
+  const params = new URLSearchParams(window.location.search);
+  const stationParam = params.get('station');
+  if(stationParam){
+    const num = parseInt(stationParam, 10);
+    const idx = stations.findIndex(s => s.num === num);
+    if(idx !== -1){
+      state.current = idx;
+      state.qIndex = 0;
+      state.screen = 'station';
+    }
+  }
+}
 
 
 const chapters = [
@@ -1207,8 +1227,8 @@ function renderFinal(){
     <div class="resource-box">
       <h3>Emporte le parcours avec toi</h3>
       <p>Scanne ce code pour retrouver l'appli sur ton téléphone, refaire le parcours ou le partager.</p>
-      <div class="qr-block" role="img" aria-label="QR code vers l'application du parcours RQTH"></div>
-      <div class="qr-note">handiparcours-rqth.app/parcours</div>
+      <img class="qr-block" src="${qrImageUrl(appBaseUrl(), 260)}" alt="QR code vers l'application du parcours RQTH">
+      <div class="qr-note">${window.location.host}${window.location.pathname}</div>
     </div>
     <button class="restart-btn" onclick="restart()">Recommencer le parcours</button>
   `;
@@ -1346,7 +1366,7 @@ function renderFacilitator(){
 
   const qrGrid = stations.map(s => `
     <div class="qr-card-mini">
-      <div class="qr-block" role="img" aria-label="QR code station ${s.num}"></div>
+      <img class="qr-block" src="${qrImageUrl(stationUrl(s.num), 200)}" alt="QR code menant directement à la station ${s.num}">
       <strong>St. ${s.num}</strong>
       <span>${s.categorie}</span>
     </div>`).join('');
@@ -1379,7 +1399,7 @@ function renderFacilitator(){
     <div class="qr-grid">${qrGrid}</div>
 
     <div class="printable-note">
-      Imprime ces 12 cartes et place-les aux stations physiques de la salle (portes, bureaux, couloirs, panneaux...). Chaque QR code peut renvoyer vers cette appli avec le numéro de station en paramètre, ou être remplacé par un simple code que les jeunes saisissent à l'écran d'accueil. Les stations de débat (3, 7, 10) gagnent à être placées dans des coins plus calmes de la salle pour permettre l'échange en équipe.
+      Imprime ces 12 cartes et place-les aux stations physiques de la salle (portes, bureaux, couloirs, panneaux...). Chaque QR code ouvre l'appli directement sur la bonne station dès qu'un smartphone le scanne — inutile de re-choisir le chapitre à l'écran d'accueil. Les stations de débat (3, 7, 10) gagnent à être placées dans des coins plus calmes de la salle pour permettre l'échange en équipe.
     </div>
   `;
 }
@@ -1420,6 +1440,7 @@ function resetTimer(){
 }
 
 /* ===================== INIT ===================== */
+initFromQuery();
 updateBackButton();
 render(false);
 </script>
