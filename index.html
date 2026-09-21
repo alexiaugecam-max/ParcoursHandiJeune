@@ -795,18 +795,15 @@ function useMascotFallback(img){
 const QR_IMG = "data:image/png;base64,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";
 const QR_URL_LABEL = "parcourshandijeune.netlify.app";
 
-function initFromQuery(){
-  const params = new URLSearchParams(window.location.search);
-  const stationParam = params.get('station');
-  if(stationParam){
-    const num = parseInt(stationParam, 10);
-    const idx = stations.findIndex(s => s.num === num);
-    if(idx !== -1){
-      state.current = idx;
-      state.qIndex = 0;
-      state.screen = 'station';
+/* Les QR codes par station n'existent plus : l'appli démarre toujours sur
+   l'écran d'accueil. Si une ancienne adresse contient "?station=…", on la
+   nettoie pour que la carte d'accueil s'affiche bien. */
+function cleanStartUrl(){
+  try{
+    if(window.location.search){
+      window.history.replaceState(null, '', window.location.pathname);
     }
-  }
+  }catch(e){}
 }
 
 
@@ -1742,7 +1739,7 @@ function resetTimer(){
 
 /* ===================== INIT ===================== */
 loadPrefs();
-initFromQuery();
+cleanStartUrl();
 updateBackButton();
 render(false);
 initialised = true;
