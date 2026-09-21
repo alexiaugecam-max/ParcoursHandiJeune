@@ -50,6 +50,7 @@
   --accent-sun-pop:#FFC93C;     /* décoratif uniquement, jamais utilisé comme texte */
 
   --stamp:#0E7C6B;
+  --warn:#B45309;
   --focus-ring:#1450C4;
 
   --font-display:'Fredoka','Nunito',sans-serif;
@@ -79,6 +80,7 @@ html[data-theme="dark"]{
   --accent-sun-pop:#FFD166;
 
   --stamp:#5FE0C8;
+  --warn:#FFB86B;
   --focus-ring:#9DC0FF;
 }
 
@@ -131,6 +133,7 @@ a{ color:inherit; }
   border-radius: 6px;
 }
 
+[data-focus]:focus{ outline:none; }
 .skip-link{
   position:absolute; left:-9999px; top:0; background:var(--focus-ring); color:#fff;
   padding:0.6rem 1rem; z-index:200; border-radius:0 0 8px 0;
@@ -262,7 +265,7 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 
 /* ---------- CARDS ---------- */
 .sheet{
-  background:var(--surface-card); border:3px solid var(--surface-border); border-radius:var(--radius-lg); padding:1.6rem;
+  background:var(--surface-card); border:3px solid var(--surface-border); border-radius:var(--radius-lg); padding:2.1rem;
   position:relative; box-shadow:5px 6px 0 var(--surface-border);
 }
 .sheet + .sheet{ margin-top:1.2rem; }
@@ -306,16 +309,26 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .speak-btn.speaking{ background:var(--accent-coral); color:var(--text-on-accent); border-color:var(--accent-coral); animation: pulse 0.8s infinite; }
 @keyframes pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.12); } }
 
-.options{ display:flex; flex-direction:column; gap:0.65rem; }
+.options{ display:flex; flex-direction:column; gap:0.85rem; }
 .opt-btn{
   text-align:left; background:var(--surface-muted); border:2.5px solid var(--surface-border); border-radius:var(--radius-md);
-  padding:0.9rem 1.1rem; font-size:1.02em; cursor:pointer; font-family:inherit; font-weight:600; color:var(--text-primary);
+  padding:1.1rem 1.25rem; font-size:1.06em; cursor:pointer; font-family:inherit; font-weight:600; color:var(--text-primary);
   transition: background 0.15s, border-color 0.15s, transform 0.12s;
 }
 .opt-btn:hover{ border-color:var(--accent-teal); transform: translateX(3px) scale(1.01); }
 .opt-btn:active{ transform: scale(0.98); }
 .opt-btn.correct{ background:var(--stamp); color:var(--text-on-accent); border-color:var(--stamp); animation: bounce 0.4s ease; }
-.opt-btn.wrong{ background:var(--accent-coral); color:var(--text-on-accent); border-color:var(--accent-coral); animation: shake 0.35s ease; }
+.opt-btn.wrong{ background:color-mix(in srgb, var(--warn) 16%, var(--surface-card)); color:var(--text-primary); border:3px dashed var(--warn); animation: shake 0.35s ease; }
+.opt-mark{ display:inline-flex; vertical-align:middle; margin-right:0.5rem; }
+.opt-mark .ico-svg{ width:1.25em; height:1.25em; }
+.opt-btn.wrong .opt-mark{ color:var(--warn); }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.fb-title{ display:flex; align-items:center; gap:0.5rem; font-family:var(--font-display); font-weight:700; font-size:1.05em; margin-bottom:0.5rem; }
+.fb-title .ico-svg{ width:1.4em; height:1.4em; }
+.feedback.good .fb-title .ico-svg{ color:var(--stamp); }
+.feedback.bad .fb-title .ico-svg{ color:var(--warn); }
+.feedback.neutral .fb-title .ico-svg{ color:var(--accent-violet); }
+.feedback:focus-visible{ outline:3px solid var(--focus-ring); outline-offset:3px; }
 .opt-btn:disabled{ cursor:default; }
 @keyframes bounce{ 0%{transform:scale(1);} 40%{transform:scale(1.04);} 100%{transform:scale(1);} }
 @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
@@ -340,10 +353,13 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 }
 .feedback.show{ display:block; animation:rise 0.35s ease; }
 .feedback.good{ background: color-mix(in srgb, var(--stamp) 16%, var(--surface-muted)); border-left:5px solid var(--stamp); }
-.feedback.bad{ background: color-mix(in srgb, var(--accent-coral) 14%, var(--surface-muted)); border-left:5px solid var(--accent-coral); }
+.feedback.bad{ background: color-mix(in srgb, var(--warn) 14%, var(--surface-muted)); border-left:5px dashed var(--warn); }
 .feedback.neutral{ background: color-mix(in srgb, var(--accent-violet) 14%, var(--surface-muted)); border-left:5px solid var(--accent-violet); }
 @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
-@media (prefers-reduced-motion: reduce){ .feedback.show, .opt-btn.correct, .opt-btn.wrong, .speak-btn.speaking{ animation:none !important; } }
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  .opt-btn:hover, .chapter-card:hover, .icon-btn:hover, .back-btn:hover, .next-btn:hover, .prefs-options button:hover{ transform:none !important; }
+}
 
 .right-info{ margin-top:0.9rem; padding-top:0.9rem; border-top:2px dashed var(--surface-border); font-size:0.92em; font-weight:400; }
 .right-info strong{ color:var(--accent-teal-strong); }
@@ -396,15 +412,15 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .entry-cartouche > *{ position:relative; }
 .entry-cartouche p.lede{ margin-bottom:0; }
 
-.chapter-grid{ display:flex; flex-direction:column; gap:0.9rem; margin-top:1rem; text-align:left; }
+.chapter-grid{ display:flex; flex-direction:column; gap:1.2rem; margin-top:1rem; text-align:left; }
 
 /* chaque carte porte une bande colorée à gauche + un fond très légèrement teinté
    pour gagner du poids visuel propre, distinct des autres cartes du parcours */
 .chapter-card{
   position:relative; overflow:hidden;
   background:var(--surface-card); border:3px solid var(--surface-border); border-radius:var(--radius-lg);
-  padding:1.1rem 1.25rem 1.1rem 1.5rem;
-  display:flex; align-items:center; gap:1rem; cursor:pointer; width:100%; font-family:inherit; color:var(--text-primary);
+  padding:1.8rem 1.6rem 1.8rem 2.1rem; min-height:128px;
+  display:flex; align-items:center; gap:1.3rem; cursor:pointer; width:100%; font-family:inherit; color:var(--text-primary);
   box-shadow: 4px 4px 0 var(--surface-border);
   transition: transform 0.15s, box-shadow 0.15s;
 }
@@ -423,16 +439,16 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 .chapter-card:nth-child(6){ --chapter-color: var(--accent-violet-strong); }
 
 .chapter-card .cnum{
-  font-family:var(--font-display); font-weight:700; color:var(--text-on-accent); font-size:1.1em; flex-shrink:0; width:38px; height:38px;
-  border-radius:12px; display:flex; align-items:center; justify-content:center; transform: rotate(-4deg);
+  font-family:var(--font-display); font-weight:700; color:var(--text-on-accent); font-size:1.45em; flex-shrink:0; width:60px; height:60px;
+  border-radius:18px; display:flex; align-items:center; justify-content:center; transform: rotate(-4deg);
   background: var(--chapter-color, var(--accent-coral));
   transition: transform 0.2s;
 }
 .chapter-card:hover .cnum{ transform: rotate(4deg) scale(1.08); }
 .chapter-card .ctxt{ text-align:left; flex:1; }
-.chapter-card .ctxt strong{ display:block; font-size:1.04em; font-family:var(--font-display); }
-.chapter-card .ctxt span{ font-size:0.85em; color:var(--text-secondary); font-weight:600; }
-.chapter-card .ccount{ font-weight:800; font-size:0.8em; color:var(--text-secondary); flex-shrink:0; text-align:right; }
+.chapter-card .ctxt strong{ display:block; font-size:1.32em; margin-bottom:0.3rem; font-family:var(--font-display); }
+.chapter-card .ctxt span{ font-size:1em; color:var(--text-secondary); font-weight:600; }
+.chapter-card .ccount{ font-weight:800; font-size:0.9em; color:var(--text-secondary); flex-shrink:0; text-align:center; background:var(--surface-muted); padding:0.55rem 1rem; border-radius:14px; }
 .chapter-card .ccount .ccheck{ display:block; font-size:1.1em; color:var(--stamp); margin-top:0.15rem; }
 
 .entry-hint{ font-size:0.85em; color:var(--text-secondary); margin-top:1.3rem; font-weight:600; }
@@ -493,6 +509,28 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
 }
 .cert-form button:hover{ background:var(--accent-violet-strong); }
 
+/* ---------- CONSIGNE JOUEUR ---------- */
+.consigne{
+  display:flex; gap:1rem; align-items:flex-start; margin-bottom:1.1rem;
+  background:var(--surface-card); border:3px solid var(--accent-sun-pop); border-radius:var(--radius-lg);
+  padding:1.2rem 1.3rem; box-shadow:4px 5px 0 var(--surface-border);
+}
+.consigne-ico{
+  width:48px; height:48px; border-radius:15px; flex-shrink:0; color:#2B2440;
+  background:var(--accent-sun-pop); display:flex; align-items:center; justify-content:center;
+  transform:rotate(-4deg);
+}
+.consigne-ico .ico-svg{ width:26px; height:26px; }
+.consigne-body strong{ font-family:var(--font-display); font-size:1.1em; display:block; margin-bottom:0.3rem; }
+.consigne-body p{ font-weight:600; font-size:0.95em; line-height:1.5; color:var(--text-secondary); margin-bottom:0.9rem; }
+.consigne-btn{
+  display:inline-flex; align-items:center; gap:0.4rem; cursor:pointer;
+  background:var(--accent-teal); color:var(--text-on-accent); border:none; border-radius:12px;
+  padding:0.65rem 1.1rem; font-family:var(--font-display); font-weight:700; font-size:0.95em;
+}
+.consigne-btn:hover{ background:var(--accent-teal-strong); }
+@media (max-width:600px){ .consigne{ flex-direction:column; } }
+
 /* ---------- QR UNIQUE + ÉTAPES ---------- */
 .qr-frame{
   width:196px; margin:0 auto 0.8rem; padding:10px; border-radius:26px;
@@ -510,6 +548,11 @@ main{ flex:1; max-width:760px; width:100%; margin:0 auto; padding:1.1rem 1rem 3r
   display:flex; align-items:center; justify-content:center;
 }
 .how-ico .ico-svg{ width:24px; height:24px; }
+
+.fac-qr{ text-align:center; margin-top:1.4rem; }
+.fac-qr h3{ margin:0.3rem 0 1rem; font-size:1.1em; }
+.qr-frame-lg{ width:min(300px, 80%); padding:14px; border-radius:32px; }
+.fac-qr-url{ margin-top:0.8rem; font-weight:800; font-size:0.9em; color:var(--accent-teal-strong); word-break:break-all; }
 
 /* ---------- ÉCRAN DE VERROUILLAGE ANIMATEUR ---------- */
 .lock-screen{ text-align:center; max-width:460px; margin:1.5rem auto 0; }
@@ -582,6 +625,12 @@ footer .footer-legal .fl-brand{ color:var(--accent-teal-strong); font-family:var
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:600px){
+  main{ padding:0.9rem 0.6rem 2.5rem; }
+  .sheet{ padding:1.5rem 1.15rem; }
+  .entry-cartouche{ padding:1.7rem 1.2rem; }
+  .chapter-card{ flex-wrap:wrap; padding:1.5rem 1.2rem 1.5rem 1.8rem; min-height:0; }
+  .chapter-card .ctxt{ min-width:0; flex-basis:calc(100% - 60px - 1.3rem); }
+  .chapter-card .ccount{ width:100%; text-align:left; }
   .brand .sub{ display:none; }
   .entry-wrap h1{ font-size:1.6em; }
   .station-title{ font-size:1.3em; }
@@ -595,8 +644,8 @@ footer .footer-legal .fl-brand{ color:var(--accent-teal-strong); font-family:var
   .global-progress{ flex-wrap:wrap; }
 }
 @media (max-width:380px){
-  main{ padding:0.9rem 0.7rem 2.5rem; }
-  .sheet{ padding:1.15rem; }
+  main{ padding:0.8rem 0.5rem 2.5rem; }
+  .sheet{ padding:1.3rem 1rem; }
   .topbar{ padding:0.7rem 0.7rem; }
 }
 
@@ -613,7 +662,7 @@ footer .footer-legal .fl-brand{ color:var(--accent-teal-strong); font-family:var
     <div class="topbar-left">
       <button class="back-btn" id="back-btn" onclick="goBack()" aria-label="Revenir à l'écran précédent"><svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg> Retour</button>
       <div class="brand">
-        <div class="mark" aria-hidden="true"><img src="mascotte.png" alt=""></div>
+        <div class="mark" aria-hidden="true"><img id="mascot-img" src="mascotte.png" alt="" onerror="useMascotFallback(this)"></div>
         <div>
           <div class="name">Le Parcours RQTH</div>
           <div class="sub">JEU DE PISTE · DROITS DES JEUNES</div>
@@ -711,6 +760,7 @@ const ICONS = {
   piggyBank: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a5 5 0 015-5h5a5 5 0 015 5v1a2 2 0 01-2 2h-1v2h-2v-2H9v2H7v-2H6a2 2 0 01-2-2v-1z"/><circle cx="16" cy="10" r="0.6" fill="currentColor" stroke="none"/><path d="M9 7V5a2 2 0 012-2h2"/></svg>',
   briefcase: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 12h18"/></svg>',
   handshake: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 11l4-3 3 2M22 11l-4-3-3 2"/><path d="M9 10l3 2 3-2"/><path d="M8 12l3 3 2-2 4 4"/></svg>',
+  xCircle: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>',
   phone: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg>',
   qr: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 17v4"/></svg>',
   clipboardCheck: '<svg class="ico-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/><path d="M9 12l2 2 4-4"/></svg>'
@@ -728,6 +778,15 @@ const chapterColors = [
 function stationColor(s){
   const idx = chapters.findIndex(c => c.id === s.chapter);
   return chapterColors[idx] || 'var(--accent-coral)';
+}
+
+/* ===================== MASCOTTE ===================== */
+/* Si le fichier mascotte.png est introuvable (mauvais nom, mauvais dossier…),
+   on affiche automatiquement la mascotte intégrée issue de l'affiche. */
+const MASCOT_FALLBACK = "data:image/jpeg;base64,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";
+function useMascotFallback(img){
+  img.onerror = null;
+  img.src = MASCOT_FALLBACK;
 }
 
 /* ===================== QR CODE UNIQUE ===================== */
@@ -950,7 +1009,7 @@ const agendaPlan = [
 
 /* ===================== ÉTAT ===================== */
 
-let state = { mode:'player', screen:'entry', current:0, qIndex:0, done:{}, progress:{}, prenom:'' };
+let state = { mode:'player', screen:'entry', current:0, qIndex:0, done:{}, progress:{}, prenom:'', consigneSeen:false };
 let history = [];
 let timer = { seconds:3600, running:false, interval:null };
 let prefs = { font:'default', size:'medium', theme:'light', voiceOn:false };
@@ -1005,6 +1064,22 @@ function totalQuestions(){ return stations.reduce((acc,s)=>acc+s.questions.lengt
 
 /* ===================== PRÉFÉRENCES ===================== */
 
+const PREFS_KEY = 'rqth-prefs-v1';
+function savePrefs(){
+  try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){}
+}
+function loadPrefs(){
+  try{
+    const raw = localStorage.getItem(PREFS_KEY);
+    if(!raw) return;
+    const p = JSON.parse(raw);
+    if(['default','verdana','opendyslexic'].includes(p.font)) setFont(p.font);
+    if(['small','medium','large','xlarge'].includes(p.size)) setSize(p.size);
+    if(['light','dark'].includes(p.theme)) setTheme(p.theme);
+    if(typeof p.voiceOn === 'boolean') setVoicePref(p.voiceOn);
+  }catch(e){}
+}
+
 function togglePrefs(){
   const panel = document.getElementById('prefs-panel');
   const btn = document.getElementById('prefs-toggle');
@@ -1015,6 +1090,7 @@ function togglePrefs(){
 
 function setFont(f){
   prefs.font = f;
+  savePrefs();
   document.documentElement.setAttribute('data-font', f);
   document.querySelectorAll('[data-font]').forEach(b => {
     if(b.tagName === 'BUTTON') b.setAttribute('aria-pressed', String(b.dataset.font === f));
@@ -1023,6 +1099,7 @@ function setFont(f){
 
 function setSize(s){
   prefs.size = s;
+  savePrefs();
   document.documentElement.setAttribute('data-size', s);
   document.querySelectorAll('[data-size]').forEach(b => {
     if(b.tagName === 'BUTTON') b.setAttribute('aria-pressed', String(b.dataset.size === s));
@@ -1031,6 +1108,7 @@ function setSize(s){
 
 function setTheme(t){
   prefs.theme = t;
+  savePrefs();
   if(t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
   else document.documentElement.removeAttribute('data-theme');
   document.querySelectorAll('[data-theme]').forEach(b => {
@@ -1040,6 +1118,7 @@ function setTheme(t){
 
 function setVoicePref(on){
   prefs.voiceOn = on;
+  savePrefs();
   document.querySelectorAll('[data-voice]').forEach(b => {
     b.setAttribute('aria-pressed', String((b.dataset.voice === 'on') === on));
   });
@@ -1107,7 +1186,25 @@ function cancelUnlock(){
   setMode('player');
 }
 
+let initialised = false;
+let lastFocusKey = null;
+function currentViewKey(){
+  return [state.mode, state.screen, state.current, state.qIndex, facUnlocked].join('|');
+}
+function focusAfterRender(){
+  const key = currentViewKey();
+  if(!initialised){ lastFocusKey = key; return; }
+  if(key === lastFocusKey) return;
+  lastFocusKey = key;
+  const target = document.querySelector('#main [data-focus]');
+  if(target){ target.focus(); window.scrollTo({ top:0 }); }
+}
 function render(recordHistory){
+  renderView();
+  focusAfterRender();
+}
+
+function renderView(){
   const main = document.getElementById('main');
   if(state.mode === 'facilitator'){
     if(!facUnlocked){
@@ -1145,11 +1242,11 @@ function renderEntry(){
     <div class="entry-wrap">
       <div class="entry-cartouche">
         <div class="kicker">${icon('sparkles')} C'est parti pour l'aventure</div>
-        <h1>12 stations à explorer.<br><span class="accent">${totalQuestions()} questions</span> qui vont te surprendre.</h1>
-        <p class="lede">Le parcours se joue en 6 chapitres et 12 stations, un peu comme un jeu de piste. Choisis un chapitre pour te lancer, avance question après question grâce aux boutons « Suivant » et « Précédent », et amuse-toi : chaque bonne réponse t'en apprend un peu plus sur tes droits. Pas de stress, ta progression est enregistrée automatiquement, tu peux reprendre où tu t'es arrêté·e.</p>
+        <h1 tabindex="-1" data-focus="1">12 stations à explorer.<br><span class="accent">${totalQuestions()} questions</span> qui vont te surprendre.</h1>
+        <p class="lede">Le parcours se joue en 6 chapitres et 12 stations, un peu comme un jeu de piste. Choisis un chapitre pour te lancer, avance question après question grâce aux boutons « Suivant » et « Précédent », et amuse-toi : chaque bonne réponse t'en apprend un peu plus sur tes droits. Pas de stress : il n'y a pas de note, tu avances à ton rythme. Ta progression reste affichée tant que tu gardes la page ouverte.</p>
       </div>
       <div class="chapter-grid">${cards}</div>
-      <p class="entry-hint">${icon('bulb')} Astuce animateur : chaque équipe peut démarrer où elle veut, l'appli garde la trace de ce qui est validé.</p>
+      <p class="entry-hint">${icon('bulb')} Astuce animateur : chaque équipe peut démarrer où elle veut, l'appli affiche ce qui est déjà validé pendant la partie.</p>
     </div>
   `;
 }
@@ -1229,7 +1326,18 @@ function renderStation(i, qIdx){
     `;
   }
 
+  const consigneHtml = state.consigneSeen ? '' : `
+    <div class="consigne" id="consigne" role="region" aria-label="Consigne du jeu">
+      <div class="consigne-ico" aria-hidden="true">${icon('bulb')}</div>
+      <div class="consigne-body">
+        <strong>Consigne</strong>
+        <p>Lis la question, choisis ta réponse, puis lis l'explication : chaque réponse t'apprend un droit. Il n'y a pas de note et tu avances à ton rythme. Utilise « Question suivante » pour continuer, ou « Question précédente » pour revenir en arrière.</p>
+        <button type="button" class="consigne-btn" onclick="dismissConsigne()">${icon('check')} J'ai compris</button>
+      </div>
+    </div>`;
+
   return `
+    ${consigneHtml}
     ${globalProgressHtml()}
     <div class="chapter-bar">${chapterChipsHtml(i)}</div>
     <div class="route-strip" role="img" aria-label="Progression : station ${i+1} sur ${stations.length}">${routeStripHtml(i)}</div>
@@ -1241,20 +1349,28 @@ function renderStation(i, qIdx){
       </div>
       <div class="station-head-row">
         <div class="station-illustration" style="background:${stationColor(s)};" aria-hidden="true">${icon(stationIllustrations[s.num])}</div>
-        <h2 class="station-title">${s.title}</h2>
+        <h2 class="station-title" id="station-title" tabindex="-1" data-focus="1">${s.title}</h2>
       </div>
       <div class="station-eyebrow">
         <span class="q-progress">Question ${qIdx+1} / ${s.questions.length}</span>
         <span class="format-tag ${q.format}">${formatLabel[q.format]}</span>
       </div>
       ${bodyHtml}
-      <div class="feedback" id="feedback" role="status"></div>
+      <div class="feedback" id="feedback" tabindex="-1" aria-label="Explication de la réponse"></div>
       <div class="step-nav">
         <button class="prev-step-btn ${(i>0 || qIdx>0) ? 'show' : ''}" onclick="prevStep(${i},${qIdx})">${icon('arrowLeft')} Question précédente</button>
         <button class="next-btn" id="next-btn" onclick="nextStep(${i},${qIdx})">${nextLabel(i,qIdx)}</button>
       </div>
     </div>
   `;
+}
+
+function dismissConsigne(){
+  state.consigneSeen = true;
+  const el = document.getElementById('consigne');
+  if(el) el.remove();
+  const t = document.getElementById('station-title');
+  if(t) t.focus();
 }
 
 function nextLabel(i, qIdx){
@@ -1283,9 +1399,20 @@ function revealDebate(i, qIdx){
   if(revealBtn) revealBtn.style.display = 'none';
   const fb = document.getElementById('feedback');
   fb.classList.add('show','neutral');
-  fb.innerHTML = `<span style="color:var(--accent-violet)">${icon('chat')}</span> ${q.explication}<div class="right-info"><strong>Ton droit ici&nbsp;:</strong> ${q.droit}</div>`;
+  fb.innerHTML = `<div class="fb-title">${icon('chat')} <span>À retenir</span></div>${q.explication}<div class="right-info"><strong>Ton droit ici&nbsp;:</strong> ${q.droit}</div>`;
   markQuestionDone(i, qIdx, true);
   document.getElementById('next-btn').classList.add('show');
+  fb.focus();
+}
+
+function setOptMark(btn, type){
+  clearOptMark(btn);
+  const label = type === 'correct' ? 'Bonne réponse' : 'Mauvaise réponse';
+  const ico = type === 'correct' ? icon('checkCircle') : icon('xCircle');
+  btn.insertAdjacentHTML('afterbegin', '<span class="opt-mark" aria-hidden="true">' + ico + '</span><span class="sr-only">' + label + ' : </span>');
+}
+function clearOptMark(btn){
+  btn.querySelectorAll('.opt-mark, .sr-only').forEach(el => el.remove());
 }
 
 function answer(stationIdx, qIdx, choiceIdx){
@@ -1296,19 +1423,29 @@ function answer(stationIdx, qIdx, choiceIdx){
 
   const correct = choiceIdx === q.correct;
   buttons[choiceIdx].classList.add(correct ? 'correct' : 'wrong');
-  if(!correct) buttons[q.correct].classList.add('correct');
+  setOptMark(buttons[choiceIdx], correct ? 'correct' : 'wrong');
+  if(!correct){
+    buttons[q.correct].classList.add('correct');
+    setOptMark(buttons[q.correct], 'correct');
+  }
 
   const fb = document.getElementById('feedback');
   fb.classList.add('show', correct ? 'good' : 'bad');
-  fb.innerHTML = `${correct ? '<span style="color:var(--stamp)">' + icon('checkCircle') + '</span> ' : ''}${q.explication}<div class="right-info"><strong>Ton droit ici&nbsp;:</strong> ${q.droit}</div>`;
+  const title = correct
+    ? icon('checkCircle') + ' <span>Bonne réponse !</span>'
+    : icon('xCircle') + ' <span>Pas tout à fait</span>';
+  fb.innerHTML = `<div class="fb-title">${title}</div>${q.explication}<div class="right-info"><strong>Ton droit ici&nbsp;:</strong> ${q.droit}</div>`;
 
   markQuestionDone(stationIdx, qIdx, correct);
   document.getElementById('next-btn').classList.add('show');
+  fb.focus();
 
   if(!correct){
+    const wrongBtn = buttons[choiceIdx];
     setTimeout(() => {
       buttons.forEach((b, idx) => { if(idx !== q.correct) b.disabled = false; });
-      buttons.forEach(b => b.classList.remove('wrong'));
+      wrongBtn.classList.remove('wrong');
+      clearOptMark(wrongBtn);
     }, 1400);
   }
 }
@@ -1364,7 +1501,7 @@ function renderFinal(){
         <p>Tu as exploré les ${stations.length} stations et découvert tes droits.</p>
       </div>
       <div class="label">${icon('trophy')} Passeport des droits</div>
-      <h2>Parcours terminé !</h2>
+      <h2 tabindex="-1" data-focus="1">Parcours terminé !</h2>
       <div class="score-line">${stationsDone} / ${stations.length} stations · ${qDone} / ${totalQuestions()} questions complétées</div>
       <div class="rights-list">${items}</div>
       <div class="cert-box">
@@ -1510,7 +1647,7 @@ function downloadRecap(){
 function restart(){
   history = [];
   updateBackButton();
-  state = { mode:'player', screen:'entry', current:0, qIndex:0, done:{}, progress:{}, prenom:'' };
+  state = { mode:'player', screen:'entry', current:0, qIndex:0, done:{}, progress:{}, prenom:'', consigneSeen:false };
   facUnlocked = false;
   render(false);
 }
@@ -1527,7 +1664,7 @@ function renderFacilitator(){
   return `
     <div class="fac-header">
       <div>
-        <h1>Déroulé d'atelier — 1h</h1>
+        <h1 tabindex="-1" data-focus="1">Déroulé d'atelier — 1h</h1>
         <p>Le Parcours RQTH · 12 stations · ${totalQuestions()} questions · sensibilisation aux droits des jeunes pouvant prétendre à la RQTH.</p>
       </div>
       <div class="timer-box">
@@ -1548,13 +1685,27 @@ function renderFacilitator(){
       <p style="color:var(--text-secondary); margin-top:0.5rem;">${agendaPlan[activeAgendaIdx].detail}</p>
     </div>
 
+    <div class="sheet fac-qr">
+      <div class="label">${icon('qr')} QR code du parcours</div>
+      <h3>À afficher ou projeter aux jeunes</h3>
+      <div class="qr-frame qr-frame-lg">
+        <img class="qr-block" src="${QR_IMG}" alt="QR code du jeu de piste RQTH à faire scanner aux participants">
+      </div>
+      <div class="fac-qr-url">${QR_URL_LABEL}</div>
+    </div>
+
     <div class="printable-note">
       <strong>Un seul QR code pour tout le parcours :</strong> celui de l'affiche de présentation (« Le Jeu de Piste RQTH : Votre Guide d'Aventure »). Affiche-le ou projette-le en début d'atelier : les jeunes le scannent, choisissent un chapitre et progressent dans les 12 stations depuis leur téléphone. Les stations de débat (3, 7, 10) gagnent à se faire dans un coin plus calme de la salle pour permettre l'échange en équipe.
     </div>
   `;
 }
 
-function selectAgenda(idx){ activeAgendaIdx = idx; render(false); }
+function selectAgenda(idx){
+  activeAgendaIdx = idx;
+  render(false);
+  const btns = document.querySelectorAll('.agenda-item');
+  if(btns[idx]) btns[idx].focus();
+}
 
 function formatTime(s){
   const m = Math.floor(s/60).toString().padStart(2,'0');
@@ -1590,9 +1741,12 @@ function resetTimer(){
 }
 
 /* ===================== INIT ===================== */
+loadPrefs();
 initFromQuery();
 updateBackButton();
 render(false);
+initialised = true;
+lastFocusKey = currentViewKey();
 </script>
 </body>
 </html>
